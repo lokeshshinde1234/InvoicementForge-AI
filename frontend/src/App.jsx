@@ -4,6 +4,7 @@ import { ClientPortalLayout } from "./layouts/ClientPortalLayout.jsx";
 import { SuperAdminLayout } from "./layouts/SuperAdminLayout.jsx";
 import { Landing } from "./routes/Landing.jsx";
 import { Login } from "./routes/Login.jsx";
+import { PublicProductPage } from "./routes/PublicProductPage.jsx";
 import { Signup } from "./routes/Signup.jsx";
 import { SuperAdminDashboard } from "./routes/superadmin/SuperAdminDashboard.jsx";
 import { CompanyDashboard } from "./routes/company/CompanyDashboard.jsx";
@@ -16,6 +17,10 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/invoice-generator" element={<PublicProductPage type="invoice" />} />
+      <Route path="/estimate-generator" element={<PublicProductPage type="estimate" />} />
+      <Route path="/expense-manager" element={<PublicProductPage type="expense" />} />
+      <Route path="/pricing" element={<PublicProductPage type="pricing" />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/superadmin" element={<SuperAdminLayout />}>
