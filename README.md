@@ -1,6 +1,6 @@
 # Invoice Forge AI
 
-AI-powered invoice and proposal management SaaS with FastAPI, PostgreSQL, React, JWT/RBAC, PDF generation, client portal flows, document upload, payments, dashboards, and an OpenAI-backed service abstraction.
+Invoice Forge AI is a full-stack SaaS platform for invoice generation, proposal management, client approval, payment tracking, and AI-powered document automation. It includes role-based dashboards for Super Admin, Company Admin, and Client users.
 
 ## Structure
 
@@ -57,7 +57,7 @@ docker compose exec backend alembic upgrade head
 - `GET /api/v1/documents` returns a privacy-safe company-facing response.
 - `POST /api/v1/ai/*` calls the swappable AI service layer.
 
-The detailed schema and document privacy rules are captured in `backend/docs/database_schema.md`. The v1 endpoint map is captured in `backend/docs/api_endpoints.md`, the RBAC flow is captured in `backend/docs/role_permission_matrix.md`, the original scaffold prompt is captured in `backend/docs/master_prompt.md`, the phase-by-phase prompts are captured in `backend/docs/phase_prompts.md`, and deployment notes are captured in `backend/docs/deployment_checklist.md`.
+The detailed schema and document privacy rules are captured in `backend/docs/database_schema.md`. The v1 endpoint map is captured in `backend/docs/api_endpoints.md`, the RBAC flow is captured in `backend/docs/role_permission_matrix.md`, the original scaffold prompt is captured in `backend/docs/master_prompt.md`, the phase-by-phase prompts are captured in `backend/docs/phase_prompts.md`, deployment notes are captured in `backend/docs/deployment_checklist.md`, and portfolio copy is captured in `backend/docs/portfolio_copy.md`.
 
 ## Deployment Checklist
 
