@@ -4,6 +4,7 @@ services:
     env: docker
     rootDir: backend
     healthCheckPath: /health
+    preDeployCommand: ./scripts/release.sh
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -17,7 +18,7 @@ services:
           name: invoice-forge-ai-redis
           property: connectionString
       - key: CORS_ORIGINS
-        value: http://localhost:5173
+        value: http://localhost:5173,https://your-vercel-app.vercel.app
 
   - type: redis
     name: invoice-forge-ai-redis
@@ -26,4 +27,3 @@ services:
 databases:
   - name: invoice-forge-ai-db
     plan: free
-
