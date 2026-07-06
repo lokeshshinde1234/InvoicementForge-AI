@@ -21,7 +21,7 @@ services:
       DATABASE_URL: postgresql+psycopg://invoice_forge:invoice_forge@postgres:5432/invoice_forge
       JWT_SECRET: local-dev-secret-change-me
       REDIS_URL: redis://redis:6379/0
-      CORS_ORIGINS: http://localhost:5173
+      CORS_ORIGINS: '["http://localhost:5173","http://127.0.0.1:5173"]'
     ports:
       - "8000:8000"
     depends_on:
@@ -45,4 +45,3 @@ services:
 
 volumes:
   postgres_data:
-

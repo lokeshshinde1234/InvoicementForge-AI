@@ -7,6 +7,7 @@ from app.db.session import get_session
 from app.models.company import Company
 from app.models.enums import UserRole
 from app.models.user import User
+from app.core.deps import get_current_user
 from app.schemas.auth import LoginRequest, RefreshRequest, SignupRequest, TokenPair, UserRead
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -55,3 +56,7 @@ async def refresh(payload: RefreshRequest, session: AsyncSession = Depends(get_s
 async def logout():
     return {"message": "Logged out"}
 
+
+@router.get("/me", response_model=UserRead)
+async def me(current_user: User = Depends(get_current_user)):
+    return current_user

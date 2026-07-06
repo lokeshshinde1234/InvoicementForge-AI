@@ -18,7 +18,7 @@ services:
           name: invoice-forge-ai-redis
           property: connectionString
       - key: CORS_ORIGINS
-        value: http://localhost:5173,https://your-vercel-app.vercel.app
+        value: '["http://localhost:5173","https://your-vercel-app.vercel.app"]'
 
   - type: redis
     name: invoice-forge-ai-redis

@@ -4,6 +4,12 @@
 
 Provision Postgres on Render, Railway, or Neon, then copy the `DATABASE_URL`.
 
+For local development on this machine, PostgreSQL 17 is configured to listen on port `8080`, so the local URL shape is:
+
+```env
+DATABASE_URL=postgresql+psycopg://postgres:<your-password>@localhost:8080/invoice_forge
+```
+
 ## Backend
 
 Deploy `/backend` to Render or Railway as a Docker service.
@@ -41,7 +47,7 @@ Deploy `/frontend` to Vercel and set:
 Add the Vercel domain to backend `CORS_ORIGINS`, for example:
 
 ```env
-CORS_ORIGINS=https://your-vercel-app.vercel.app
+CORS_ORIGINS=["https://your-vercel-app.vercel.app"]
 ```
 
 Use comma-separated origins for multiple environments.

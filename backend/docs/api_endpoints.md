@@ -8,6 +8,7 @@ All endpoints are versioned under `/api/v1`.
 - `POST /auth/login`
 - `POST /auth/refresh`
 - `POST /auth/logout`
+- `GET /auth/me`
 
 ## Super Admin
 

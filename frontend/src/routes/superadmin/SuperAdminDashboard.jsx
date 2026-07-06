@@ -27,10 +27,10 @@ export function SuperAdminDashboard() {
       </header>
 
       <div className="stat-grid">
-        <StatTile label="Companies" value={analytics.total_companies || 8} icon={Building2} />
-        <StatTile label="Active companies" value={analytics.active_companies || 7} icon={Power} tone="teal" />
-        <StatTile label="SaaS revenue" value={`INR ${analytics.saas_wide_revenue || 420000}`} icon={LineChart} tone="blue" />
-        <StatTile label="Signups this month" value={analytics.signups_this_month || 2} icon={UsersRound} tone="amber" />
+        <StatTile label="Companies" value={analytics.total_companies} icon={Building2} />
+        <StatTile label="Active companies" value={analytics.active_companies} icon={Power} tone="teal" />
+        <StatTile label="SaaS revenue" value={`INR ${analytics.saas_wide_revenue}`} icon={LineChart} tone="blue" />
+        <StatTile label="Signups this month" value={analytics.signups_this_month} icon={UsersRound} tone="amber" />
       </div>
 
       <div className="panel overflow-hidden">

@@ -8,7 +8,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     app_name: str = "Invoice Forge AI"
     api_v1_prefix: str = "/api/v1"
-    database_url: str = "sqlite+aiosqlite:///./invoice_forge.db"
+    database_url: str = "postgresql+psycopg://postgres:postgres@localhost:8080/invoice_forge"
     jwt_secret: str = "change-me-in-production"
     jwt_algorithm: str = "HS256"
     access_token_minutes: int = 30
@@ -32,4 +32,3 @@ class Settings(BaseSettings):
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
-

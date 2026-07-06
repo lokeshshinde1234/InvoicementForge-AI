@@ -1,3 +1,7 @@
+import os
+
+os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///./test_invoice_forge.db"
+
 import pytest
 from httpx import ASGITransport, AsyncClient
 

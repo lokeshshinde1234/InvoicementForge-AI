@@ -1,5 +1,5 @@
 import { CalendarClock, FilePlus2, Plus, Sparkles, Trash2 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { api } from "../../api/client";
 
 export function InvoiceBuilder() {
@@ -12,6 +12,11 @@ export function InvoiceBuilder() {
     items: [{ description: "AI proposal automation sprint", quantity: 1, unit_price: 45000 }]
   });
   const [created, setCreated] = useState(null);
+  const [clients, setClients] = useState([]);
+
+  useEffect(() => {
+    api.get("/clients").then((res) => setClients(res.data)).catch(() => {});
+  }, []);
 
   const subtotal = useMemo(() => invoice.items.reduce((sum, item) => sum + Number(item.quantity || 0) * Number(item.unit_price || 0), 0), [invoice.items]);
   const tax = subtotal * Number(invoice.tax_percent || 0) / 100;
@@ -53,12 +58,16 @@ export function InvoiceBuilder() {
           </div>
           <div className="panel-body grid gap-4">
             <div className="grid gap-3 lg:grid-cols-[1fr_140px_140px_170px]">
-              <input placeholder="Client UUID" value={invoice.client_id} onChange={(e) => setInvoice({ ...invoice, client_id: e.target.value })} />
+              <select value={invoice.client_id} onChange={(e) => setInvoice({ ...invoice, client_id: e.target.value })}>
+                <option value="">Select client</option>
+                {clients.map((client) => <option key={client.id} value={client.id}>{client.name} - {client.email}</option>)}
+              </select>
               <input type="number" placeholder="GST %" value={invoice.tax_percent} onChange={(e) => setInvoice({ ...invoice, tax_percent: Number(e.target.value) })} />
               <input type="number" placeholder="Discount" value={invoice.discount} onChange={(e) => setInvoice({ ...invoice, discount: Number(e.target.value) })} />
               <input type="date" value={invoice.due_date} onChange={(e) => setInvoice({ ...invoice, due_date: e.target.value })} />
             </div>
             <textarea rows={3} placeholder="Notes, terms, payment instructions" value={invoice.notes} onChange={(e) => setInvoice({ ...invoice, notes: e.target.value })} />
+            {!clients.length && <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm font-semibold text-amber-800">Add a client first, then return here to create invoices dynamically.</div>}
 
             <div className="grid gap-3">
               <div className="flex items-center justify-between">

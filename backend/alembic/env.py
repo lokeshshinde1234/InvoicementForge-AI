@@ -1,4 +1,6 @@
 from logging.config import fileConfig
+import asyncio
+import sys
 
 from alembic import context
 from sqlalchemy import pool
@@ -10,6 +12,8 @@ from app.db import base  # noqa: F401
 from app.db.session import Base
 
 config = context.config
+if sys.platform.startswith("win"):
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 config.set_main_option("sqlalchemy.url", get_settings().database_url)
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
@@ -46,4 +50,3 @@ if context.is_offline_mode():
     run_migrations_offline()
 else:
     run_migrations_online()
-
