@@ -7,7 +7,7 @@ Provision Postgres on Render, Railway, or Neon, then copy the `DATABASE_URL`.
 For local development on this machine, PostgreSQL 17 is configured to listen on port `8080`, so the local URL shape is:
 
 ```env
-DATABASE_URL=postgresql+psycopg://postgres:<your-password>@localhost:8080/invoice_forge
+DATABASE_URL=postgresql+asyncpg://postgres:<your-password>@localhost:8080/invoice_forge
 ```
 
 ## Backend
