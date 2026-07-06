@@ -20,6 +20,7 @@ All endpoints are versioned under `/api/v1`.
 
 - `GET /companies/me`
 - `PATCH /companies/me`
+- `POST /companies/me/logo`
 
 ## Clients
 
@@ -75,4 +76,4 @@ All endpoints are versioned under `/api/v1`.
 ## Additional Implemented Endpoints
 
 - `GET /companies/{company_id}/documents` is a privacy-safe alias for company document review.
-- `GET /portal/invoices` and `GET /portal/proposals` support the client portal route tree.
+- `GET /portal/invoices`, `GET /portal/proposals`, and `GET /portal/invoices/{id}/pdf` support the client portal route tree.

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -10,6 +10,7 @@ from app.models.enums import UserRole
 from app.models.user import User
 from app.schemas.company import CompanyRead, CompanyUpdate
 from app.schemas.document import DocumentCompanyRead
+from app.services.storage_service import storage_service
 
 router = APIRouter(prefix="/companies", tags=["companies"])
 
@@ -23,6 +24,19 @@ async def get_my_company(_: User = Depends(require_role("company_admin")), compa
 async def update_my_company(payload: CompanyUpdate, _: User = Depends(require_role("company_admin")), company: Company = Depends(get_current_company), session: AsyncSession = Depends(get_session)):
     for key, value in payload.model_dump(exclude_unset=True).items():
         setattr(company, key, value)
+    await session.commit()
+    await session.refresh(company)
+    return company
+
+
+@router.post("/me/logo", response_model=CompanyRead)
+async def upload_company_logo(
+    file: UploadFile = File(...),
+    _: User = Depends(require_role("company_admin")),
+    company: Company = Depends(get_current_company),
+    session: AsyncSession = Depends(get_session),
+):
+    company.logo_url = await storage_service.upload(file, f"companies/{company.id}/logo")
     await session.commit()
     await session.refresh(company)
     return company
