@@ -43,6 +43,11 @@ async def create_proposal(payload: ProposalCreate, current_user: User = Depends(
     return proposal
 
 
+@router.get("/{proposal_id}", response_model=ProposalRead)
+async def get_proposal(proposal_id: str, current_user: User = Depends(require_role(UserRole.company_admin, UserRole.client)), session: AsyncSession = Depends(get_session)):
+    return await scoped_proposal(proposal_id, current_user, session)
+
+
 @router.patch("/{proposal_id}", response_model=ProposalRead)
 async def update_proposal(proposal_id: str, payload: ProposalUpdate, current_user: User = Depends(require_role(UserRole.company_admin)), session: AsyncSession = Depends(get_session)):
     proposal = await scoped_proposal(proposal_id, current_user, session)
@@ -80,4 +85,3 @@ async def respond_to_proposal(proposal_id: str, payload: ProposalRespond, curren
     await session.commit()
     await session.refresh(proposal)
     return proposal
-
