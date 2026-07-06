@@ -57,6 +57,8 @@ docker compose exec backend alembic upgrade head
 - `GET /api/v1/documents` returns a privacy-safe company-facing response.
 - `POST /api/v1/ai/*` calls the swappable AI service layer.
 
+The detailed schema and document privacy rules are captured in `backend/docs/database_schema.md`.
+
 ## Deployment Checklist
 
 1. Provision Postgres and Redis.
@@ -76,4 +78,3 @@ docker compose exec backend alembic upgrade head
 - Add background reminder tasks and email provider integration.
 - Expand frontend CRUD editing and payment recording screens.
 - Add full test coverage for invoices, proposals, payments, portal, and document privacy.
-

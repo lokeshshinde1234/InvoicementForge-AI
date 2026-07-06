@@ -16,6 +16,6 @@ class Document(UUIDPrimaryKeyMixin, Base):
     doc_type: Mapped[str] = mapped_column(String(64))
     file_url: Mapped[str] = mapped_column(String(1024))
     visible_to_company: Mapped[bool] = mapped_column(Boolean, default=True)
+    # Never add extracted Aadhaar/PAN values to company-facing schemas.
     status: Mapped[str] = mapped_column(String(64), default="uploaded")
     uploaded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
-
