@@ -57,7 +57,7 @@ docker compose exec backend alembic upgrade head
 - `GET /api/v1/documents` returns a privacy-safe company-facing response.
 - `POST /api/v1/ai/*` calls the swappable AI service layer.
 
-The detailed schema and document privacy rules are captured in `backend/docs/database_schema.md`. The v1 endpoint map is captured in `backend/docs/api_endpoints.md`, and the RBAC flow is captured in `backend/docs/role_permission_matrix.md`.
+The detailed schema and document privacy rules are captured in `backend/docs/database_schema.md`. The v1 endpoint map is captured in `backend/docs/api_endpoints.md`, the RBAC flow is captured in `backend/docs/role_permission_matrix.md`, and the original scaffold prompt is captured in `backend/docs/master_prompt.md`.
 
 ## Deployment Checklist
 
