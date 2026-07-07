@@ -5,6 +5,7 @@ __pycache__/
 *.pyc
 *.db
 uploads/
+.local-postgres/
 
 node_modules/
 dist/
