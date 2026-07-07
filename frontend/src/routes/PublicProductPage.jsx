@@ -1,82 +1,148 @@
-import { ArrowRight, BadgeIndianRupee, Bot, CheckCircle2, CreditCard, FileSignature, FileText, ReceiptText, UploadCloud } from "lucide-react";
+import {
+  ArrowRight,
+  BadgeIndianRupee,
+  Bot,
+  CheckCircle2,
+  CreditCard,
+  FileSignature,
+  ReceiptText,
+  ScanLine,
+  ShieldCheck,
+  UploadCloud
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { PublicNav } from "./Landing.jsx";
 
 const pages = {
   invoice: {
-    eyebrow: "Free invoice generator",
-    title: "Create professional invoices from a clean, guided workflow.",
-    copy: "Use clients, line items, tax, discounts, notes, and PDF output to generate invoices without spreadsheet formatting.",
+    eyebrow: "Invoice Studio",
+    title: "A working room for invoices that need accuracy, memory, and speed.",
+    copy: "Create itemized invoices with GST, discounts, due dates, saved clients, payment state, and PDF-ready structure.",
     icon: ReceiptText,
-    bullets: ["GST-ready invoice fields", "Automatic subtotal and total calculation", "Downloadable invoice PDF", "Payment status tracking"]
+    accent: "INR 58,410",
+    bullets: ["Client profile reuse", "Automatic subtotal and GST", "Discount and due-date logic", "Payment lifecycle ready"],
+    flow: ["Select client", "Add line items", "Review totals", "Create invoice"]
   },
   estimate: {
-    eyebrow: "AI estimate and proposal generator",
-    title: "Turn project briefs into client-ready proposals.",
-    copy: "Draft scope, deliverables, price, terms, and approval-ready proposal content with an AI-assisted workflow.",
+    eyebrow: "AI Proposal Desk",
+    title: "Turn an unsure client brief into a proposal that can actually be sent.",
+    copy: "Draft scope, timeline, commercial terms, amount, and approval language from a short project note.",
     icon: FileSignature,
-    bullets: ["AI proposal drafts", "Client approval or rejection", "Convert approved work into invoices", "Optional e-sign tracking"]
+    accent: "6-week sprint",
+    bullets: ["AI proposal draft", "Client approval flow", "Amount and title capture", "Convertible business context"],
+    flow: ["Paste brief", "Generate draft", "Assign client", "Save proposal"]
   },
   expense: {
-    eyebrow: "AI expense and document manager",
-    title: "Keep receipts, KYC files, and supporting documents organized.",
-    copy: "Upload files securely and expose only safe metadata to company admins, with room for future AI extraction workflows.",
+    eyebrow: "Document Vault",
+    title: "A privacy-aware document layer for receipts, KYC, and supporting proof.",
+    copy: "Handle uploads with company-safe metadata patterns and keep sensitive client documents separate from casual views.",
     icon: UploadCloud,
-    bullets: ["Client-only uploads", "Company-safe metadata responses", "Cloudinary or S3 ready", "Privacy-first document handling"]
+    accent: "Safe metadata",
+    bullets: ["Client-only upload path", "KYC-oriented structure", "Cloud storage ready", "Privacy-first response design"],
+    flow: ["Upload", "Classify", "Protect", "Reference"]
   },
   pricing: {
-    eyebrow: "Simple SaaS pricing",
-    title: "Start with a portfolio-ready MVP and grow into paid plans.",
-    copy: "Use the current product as a launchable base: company signup, client management, invoices, proposals, AI, and dashboards.",
+    eyebrow: "Launch Economics",
+    title: "A SaaS-ready base you can price, deploy, and grow into a real product.",
+    copy: "Start with real auth, PostgreSQL persistence, tenant workflows, invoices, proposals, dashboards, and AI surfaces.",
     icon: CreditCard,
-    bullets: ["Free local development", "Deploy to Vercel and Render", "PostgreSQL production ready", "Add payments when ready"]
+    accent: "Production path",
+    bullets: ["Vercel frontend ready", "Render/Railway backend notes", "PostgreSQL migrations", "Extensible payment plans"],
+    flow: ["Build", "Deploy", "Measure", "Monetize"]
   }
 };
+
+function PreviewCard({ page }) {
+  const Icon = page.icon;
+
+  return (
+    <div className="panel overflow-hidden">
+      <div className="grid gap-4 border-b border-stone-300 p-5 md:grid-cols-[1fr_auto] md:items-start">
+        <div>
+          <p className="text-xs font-black uppercase text-stone-500">Live preview</p>
+          <p className="font-editorial mt-2 text-4xl font-bold leading-none">{page.accent}</p>
+        </div>
+        <div className="grid h-14 w-14 place-items-center rounded-lg bg-stone-950 text-[#f8d47a]">
+          <Icon size={25} />
+        </div>
+      </div>
+      <div className="grid gap-3 p-5">
+        {page.flow.map((step, index) => (
+          <div key={step} className="grid grid-cols-[42px_1fr_auto] items-center gap-3 rounded-lg border border-stone-200 bg-stone-50 p-3">
+            <span className="grid h-9 w-9 place-items-center rounded-lg bg-white text-xs font-black text-stone-500">0{index + 1}</span>
+            <span className="font-black text-stone-900">{step}</span>
+            <CheckCircle2 className={index < 2 ? "text-teal-700" : "text-stone-300"} size={18} />
+          </div>
+        ))}
+      </div>
+      <div className="border-t border-stone-300 bg-[#151515] p-5 text-white">
+        <div className="flex items-center gap-3">
+          <Bot className="text-[#f8d47a]" />
+          <div>
+            <p className="font-black">AI assist layer</p>
+            <p className="text-sm text-stone-400">Generate, inspect, summarize, and prepare the next action.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function PublicProductPage({ type }) {
   const page = pages[type];
   const Icon = page.icon;
 
   return (
-    <main className="min-h-screen bg-[#f8fafc] text-slate-950">
+    <main className="premium-shell">
       <PublicNav />
-      <section className="mx-auto grid max-w-7xl gap-10 px-5 py-16 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+      <section className="mx-auto grid max-w-7xl gap-10 px-5 py-14 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
         <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-4 py-2 text-sm font-black text-teal-800">
-            <Icon size={16} />
+          <div className="inline-flex items-center gap-2 rounded-lg border border-stone-300 bg-white/70 px-3 py-2 text-sm font-black text-stone-800">
+            <Icon size={16} className="text-teal-700" />
             {page.eyebrow}
           </div>
-          <h1 className="mt-6 max-w-3xl text-4xl font-black leading-tight md:text-6xl">{page.title}</h1>
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">{page.copy}</p>
+          <h1 className="font-editorial mt-6 max-w-4xl text-5xl font-bold leading-[0.94] md:text-7xl">{page.title}</h1>
+          <p className="mt-5 max-w-2xl text-lg leading-8 text-stone-600">{page.copy}</p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link to="/signup" className="primary-btn">Start free <ArrowRight size={18} /></Link>
+            <Link to="/signup" className="primary-btn">
+              Start workspace
+              <ArrowRight size={18} />
+            </Link>
             <Link to="/login" className="secondary-btn">Sign in</Link>
           </div>
         </div>
-        <div className="panel p-5">
-          <div className="flex items-center gap-3 border-b border-slate-200 pb-5">
-            <div className="grid h-12 w-12 place-items-center rounded-lg bg-teal-50 text-teal-700"><BadgeIndianRupee size={22} /></div>
-            <div>
-              <p className="font-black">Invoice Forge AI</p>
-              <p className="text-sm text-slate-500">Product workflow preview</p>
-            </div>
+        <PreviewCard page={page} />
+      </section>
+
+      <section className="border-y border-stone-300 bg-[#fffefa]">
+        <div className="mx-auto grid max-w-7xl gap-5 px-5 py-12 md:grid-cols-4">
+          {page.bullets.map((item) => (
+            <article key={item} className="rounded-lg border border-stone-300 bg-white p-5">
+              <CheckCircle2 className="text-teal-700" />
+              <p className="mt-5 text-sm font-black leading-6 text-stone-900">{item}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-5 py-16">
+        <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
+          <div>
+            <p className="eyebrow">Product principle</p>
+            <h2 className="font-editorial text-4xl font-bold leading-none md:text-5xl">Every page should reduce the next decision.</h2>
+            <p className="mt-4 leading-7 text-stone-600">The interface is designed around the natural order of finance work: identify the client, create the document, protect the proof, then collect the money.</p>
           </div>
-          <div className="mt-5 grid gap-3">
-            {page.bullets.map((item) => (
-              <div key={item} className="flex items-center gap-3 rounded-lg bg-slate-50 p-3">
-                <CheckCircle2 className="text-teal-700" size={18} />
-                <span className="text-sm font-bold text-slate-700">{item}</span>
+          <div className="grid gap-4 md:grid-cols-3">
+            {[
+              [ScanLine, "Structured"],
+              [ShieldCheck, "Scoped"],
+              [BadgeIndianRupee, "Collectable"]
+            ].map(([CardIcon, label]) => (
+              <div key={label} className="rounded-lg border border-stone-300 bg-[#151515] p-5 text-white">
+                <CardIcon className="text-[#f8d47a]" />
+                <p className="font-editorial mt-12 text-3xl font-bold">{label}</p>
               </div>
             ))}
-          </div>
-          <div className="mt-5 rounded-lg bg-slate-950 p-5 text-white">
-            <div className="flex items-center gap-3">
-              <Bot className="text-teal-300" />
-              <div>
-                <p className="font-black">AI assistant ready</p>
-                <p className="text-sm text-slate-300">Generate, summarize, detect, and remind.</p>
-              </div>
-            </div>
           </div>
         </div>
       </section>
