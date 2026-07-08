@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import create_access_token, create_refresh_token, decode_token, hash_password, verify_password
@@ -13,19 +13,24 @@ from app.schemas.auth import LoginRequest, RefreshRequest, SignupRequest, TokenP
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
+def normalize_email(email: str) -> str:
+    return email.strip().lower()
+
+
 def token_pair(user: User) -> TokenPair:
     return TokenPair(access_token=create_access_token(user.id), refresh_token=create_refresh_token(user.id))
 
 
 @router.post("/signup", response_model=TokenPair, status_code=status.HTTP_201_CREATED)
 async def signup(payload: SignupRequest, session: AsyncSession = Depends(get_session)):
-    existing = await session.scalar(select(User).where(User.email == payload.email))
+    email = normalize_email(str(payload.email))
+    existing = await session.scalar(select(User).where(func.lower(User.email) == email))
     if existing:
         raise HTTPException(status_code=409, detail="Email already registered")
     company = Company(name=payload.company_name, gst_number=payload.gst_number, address=payload.address)
     session.add(company)
     await session.flush()
-    user = User(email=payload.email, password_hash=hash_password(payload.password), role=UserRole.company_admin, company_id=company.id)
+    user = User(email=email, password_hash=hash_password(payload.password), role=UserRole.company_admin, company_id=company.id)
     session.add(user)
     await session.commit()
     await session.refresh(user)
@@ -34,7 +39,8 @@ async def signup(payload: SignupRequest, session: AsyncSession = Depends(get_ses
 
 @router.post("/login", response_model=TokenPair)
 async def login(payload: LoginRequest, session: AsyncSession = Depends(get_session)):
-    user = await session.scalar(select(User).where(User.email == payload.email))
+    email = normalize_email(str(payload.email))
+    user = await session.scalar(select(User).where(func.lower(User.email) == email))
     if not user or not verify_password(payload.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Invalid email or password")
     return token_pair(user)

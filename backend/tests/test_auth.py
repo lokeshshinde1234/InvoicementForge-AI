@@ -46,6 +46,19 @@ async def test_signup_login_and_refresh(client):
 
 
 @pytest.mark.asyncio
+async def test_login_email_is_case_insensitive(client):
+    response = await client.post(
+        "/api/v1/auth/signup",
+        json={"company_name": "Bajaj Demo", "email": "Bajaj.Admin@Example.com", "password": "strongpass123"},
+    )
+    assert response.status_code == 201, response.text
+
+    login = await client.post("/api/v1/auth/login", json={"email": "bajaj.admin@example.com", "password": "strongpass123"})
+    assert login.status_code == 200, login.text
+    assert login.json()["access_token"]
+
+
+@pytest.mark.asyncio
 async def test_company_admin_role_and_scoped_client_create(client):
     tokens = await signup(client)
     headers = {"Authorization": f"Bearer {tokens['access_token']}"}
