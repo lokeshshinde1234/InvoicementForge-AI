@@ -20,21 +20,18 @@ import {
   UploadCloud,
   Users
 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { api } from "../api/client";
 import heroProduct from "../assets/landing-hero-product.png";
+import { useScrollReveal } from "../hooks/useScrollReveal.js";
+import { money } from "../utils/format.js";
 
 const navLinks = [
   ["Invoice Generator", "/invoice-generator"],
   ["Estimate Generator", "/estimate-generator"],
   ["Expense Manager", "/expense-manager"],
   ["Pricing", "/pricing"]
-];
-
-const proof = [
-  ["4 workspaces", "Admin, company, client, and public product surfaces"],
-  ["10 tables", "PostgreSQL-backed data model ready for real records"],
-  ["AI desk", "Proposal, reminders, summaries, and invoice checks"],
-  ["Portal flow", "Client approvals, KYC files, and payment context"]
 ];
 
 const operatingSystem = [
@@ -50,11 +47,11 @@ const featureRows = [
   ["Client memory", "Save buyer profiles once and reuse them across invoices, proposals, uploads, and follow-up history.", Users],
   ["Privacy ledger", "Keep KYC and document handling scoped, with company-safe metadata instead of reckless data exposure.", ShieldCheck],
   ["Payment command", "Track partial payments, pending receivables, overdue work, and monthly revenue from one dashboard.", CreditCard],
-  ["Founder-grade deployment", "Designed for Vercel, Render, Railway, PostgreSQL, Redis, and real SaaS environment variables.", Layers3]
+  ["Launch-ready workspace", "Start with polished workflows for quoting, invoicing, approvals, documents, and collections.", Layers3]
 ];
 
 const roleMoments = [
-  ["Founder", "Launch a polished invoice SaaS with real auth, tenant data, dashboards, and database persistence."],
+  ["Founder", "Run proposals, invoices, clients, payments, and follow-ups from one polished finance workspace."],
   ["Agency", "Quote work, send proposals, convert to invoices, and keep every client conversation tied to money."],
   ["Client", "Approve proposals, upload documents, and understand payment status without asking for updates."]
 ];
@@ -87,7 +84,7 @@ function PublicNav() {
   );
 }
 
-function MiniLedger() {
+function MiniLedger({ stats }) {
   return (
     <div className="rounded-lg border border-stone-800 bg-[#151515] p-4 text-white shadow-2xl">
       <div className="flex items-center justify-between border-b border-white/10 pb-3">
@@ -99,12 +96,12 @@ function MiniLedger() {
       </div>
       <div className="mt-4 grid gap-2">
         {[
-          ["Website redesign", "INR 45,000", "Due Friday"],
-          ["Mobile MVP proposal", "INR 1,85,000", "Awaiting approval"],
-          ["KYC upload", "2 files", "Client safe"],
-          ["Reminder drafted", "AI", "Polite tone"]
+          ["Invoices created", stats.invoices, "Ready to send"],
+          ["Proposal drafts", stats.proposals, "Approval ready"],
+          ["Client profiles", stats.clients, "Client-ready"],
+          ["Invoice value", money(stats.invoice_value), "Live total"]
         ].map(([name, value, meta]) => (
-          <div key={name} className="grid grid-cols-[1fr_auto] gap-3 rounded-lg border border-white/10 bg-white/5 p-3">
+          <div key={name} data-reveal="scale" className="grid grid-cols-[1fr_auto] gap-3 rounded-lg border border-white/10 bg-white/5 p-3">
             <div>
               <p className="text-sm font-black">{name}</p>
               <p className="text-xs text-stone-400">{meta}</p>
@@ -118,12 +115,19 @@ function MiniLedger() {
 }
 
 export function Landing() {
+  const revealRef = useScrollReveal();
+  const [stats, setStats] = useState({ active_companies: 0, clients: 0, invoices: 0, proposals: 0, invoice_value: 0 });
+
+  useEffect(() => {
+    api.get("/public/stats").then((res) => setStats(res.data)).catch(() => {});
+  }, []);
+
   return (
-    <main className="premium-shell">
+    <main ref={revealRef} className="premium-shell">
       <PublicNav />
 
       <section className="mx-auto grid max-w-7xl gap-10 px-5 pb-10 pt-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-        <div>
+        <div data-reveal="left">
           <div className="inline-flex items-center gap-2 rounded-lg border border-stone-300 bg-white/70 px-3 py-2 text-sm font-black text-stone-800">
             <Sparkles size={16} className="text-teal-700" />
             Built like a finance teammate, not a form generator
@@ -143,26 +147,18 @@ export function Landing() {
               Explore invoice studio
             </Link>
           </div>
-          <div className="proof-strip mt-8">
-            {proof.map(([value, label]) => (
-              <div key={value}>
-                <p className="font-editorial text-xl font-bold leading-tight text-stone-950">{value}</p>
-                <p className="mt-1 text-xs font-bold leading-5 text-stone-500">{label}</p>
-              </div>
-            ))}
-          </div>
         </div>
 
-        <div className="grid gap-4">
+        <div className="grid gap-4" data-reveal="right">
           <div className="relative overflow-hidden rounded-lg border border-stone-300 bg-[#fffefa] shadow-2xl shadow-stone-900/10">
             <div className="grid gap-4 p-4 md:grid-cols-[1.2fr_0.8fr]">
               <img src={heroProduct} alt="Invoice Forge AI dashboard, invoice panel, proposal panel, and revenue analytics" className="h-full min-h-80 w-full rounded-lg border border-stone-200 object-cover object-left-top" />
-              <MiniLedger />
+              <MiniLedger stats={stats} />
             </div>
           </div>
           <div className="grid gap-3 sm:grid-cols-3">
             {["Draft", "Approve", "Collect"].map((item, index) => (
-              <div key={item} className="rounded-lg border border-stone-300 bg-white/70 p-4">
+              <div key={item} data-reveal="scale" className="rounded-lg border border-stone-300 bg-white/70 p-4">
                 <p className="text-xs font-black text-teal-800">0{index + 1}</p>
                 <p className="mt-2 font-black">{item}</p>
               </div>
@@ -173,14 +169,14 @@ export function Landing() {
 
       <section className="border-y border-stone-300 bg-[#151515] text-white">
         <div className="mx-auto grid max-w-7xl gap-8 px-5 py-14 lg:grid-cols-[0.75fr_1.25fr]">
-          <div>
+          <div data-reveal="left">
             <p className="text-sm font-black uppercase text-[#f8d47a]">A different operating model</p>
             <h2 className="font-editorial mt-3 text-4xl font-bold leading-none md:text-5xl">One invoice is never just one invoice.</h2>
             <p className="mt-4 leading-7 text-stone-300">It contains a client relationship, tax logic, payment pressure, approval risk, documents, reminders, and proof. This UI treats that reality seriously.</p>
           </div>
           <div className="grid gap-3 md:grid-cols-2">
             {operatingSystem.map(([title, copy, Icon]) => (
-              <article key={title} className="rounded-lg border border-white/10 bg-white/5 p-5">
+              <article key={title} data-reveal="scale" className="rounded-lg border border-white/10 bg-white/5 p-5">
                 <Icon className="text-[#f8d47a]" size={24} />
                 <h3 className="mt-5 text-lg font-black">{title}</h3>
                 <p className="mt-2 text-sm leading-6 text-stone-300">{copy}</p>
@@ -192,14 +188,14 @@ export function Landing() {
 
       <section className="mx-auto max-w-7xl px-5 py-16">
         <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
-          <div>
+          <div data-reveal="left">
             <p className="eyebrow">Working surfaces</p>
             <h2 className="font-editorial text-4xl font-bold leading-none md:text-6xl">Pages that feel like someone uses them every day.</h2>
             <p className="mt-5 leading-7 text-stone-600">The homepage now introduces the real product system: not decorative promises, but the exact work people need when money is moving.</p>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             {featureRows.map(([title, copy, Icon]) => (
-              <article key={title} className="panel p-5">
+              <article key={title} data-reveal="scale" className="panel p-5">
                 <div className="flex items-center gap-3">
                   <div className="grid h-11 w-11 place-items-center rounded-lg bg-stone-950 text-[#f8d47a]">
                     <Icon size={20} />
@@ -215,7 +211,7 @@ export function Landing() {
 
       <section className="bg-[#fffefa]">
         <div className="mx-auto grid max-w-7xl gap-8 px-5 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
-          <div className="panel overflow-hidden">
+          <div data-reveal="left" className="panel overflow-hidden">
             <div className="border-b border-stone-300 p-5">
               <p className="eyebrow">AI workbench</p>
               <h2 className="font-editorial text-4xl font-bold leading-none">Ask for a document. Get a workflow.</h2>
@@ -224,9 +220,9 @@ export function Landing() {
               {[
                 ["User", "Create a proposal for a 6-week analytics dashboard with payment reminders."],
                 ["Invoice Forge AI", "Drafted scope, timeline, pricing, client approval copy, invoice conversion note, and reminder sequence."],
-                ["System", "Ready to save into PostgreSQL as a proposal record."]
+                ["System", "Ready to review, share, and turn into a proposal."]
               ].map(([speaker, text]) => (
-                <div key={speaker} className="rounded-lg border border-stone-200 bg-stone-50 p-4">
+                <div key={speaker} data-reveal="scale" className="rounded-lg border border-stone-200 bg-stone-50 p-4">
                   <p className="text-xs font-black uppercase text-stone-500">{speaker}</p>
                   <p className="mt-2 text-sm font-semibold leading-6 text-stone-800">{text}</p>
                 </div>
@@ -236,7 +232,7 @@ export function Landing() {
 
           <div className="grid gap-4">
             {roleMoments.map(([role, copy]) => (
-              <article key={role} className="rounded-lg border border-stone-300 bg-white p-5">
+              <article key={role} data-reveal="right" className="rounded-lg border border-stone-300 bg-white p-5">
                 <div className="flex items-center justify-between gap-3">
                   <h3 className="font-editorial text-3xl font-bold">{role}</h3>
                   <CheckCircle2 className="text-teal-700" />
@@ -256,7 +252,7 @@ export function Landing() {
             [UploadCloud, "Document"],
             [Banknote, "Payment"]
           ].map(([Icon, label]) => (
-            <div key={label} className="rounded-lg border border-stone-300 bg-[#151515] p-5 text-white">
+            <div key={label} data-reveal="scale" className="rounded-lg border border-stone-300 bg-[#151515] p-5 text-white">
               <Icon className="text-[#f8d47a]" />
               <p className="mt-8 text-xs font-black uppercase text-stone-400">Module</p>
               <p className="font-editorial mt-1 text-3xl font-bold">{label}</p>
@@ -266,11 +262,11 @@ export function Landing() {
       </section>
 
       <section className="mx-auto max-w-7xl px-5 pb-16">
-        <div className="grid gap-5 rounded-lg border border-stone-300 bg-[#fffefa] p-6 md:grid-cols-[1fr_auto] md:items-center">
+        <div data-reveal="scale" className="grid gap-5 rounded-lg border border-stone-300 bg-[#fffefa] p-6 md:grid-cols-[1fr_auto] md:items-center">
           <div>
             <p className="eyebrow">Ready for records</p>
             <h2 className="font-editorial text-4xl font-bold leading-none">Start with signup. Continue with real stored finance data.</h2>
-            <p className="mt-3 text-stone-600">The backend is connected to PostgreSQL, so new workspaces and logins persist instead of disappearing after refresh.</p>
+            <p className="mt-3 text-stone-600">Create your workspace once and keep every client, document, proposal, invoice, and payment update in one place.</p>
           </div>
           <Link to="/signup" className="primary-btn">
             Open the onboarding room
@@ -279,7 +275,7 @@ export function Landing() {
         </div>
       </section>
 
-      <footer className="border-t border-stone-300 bg-[#151515] text-white">
+      <footer data-reveal className="border-t border-stone-300 bg-[#151515] text-white">
         <div className="mx-auto grid max-w-7xl gap-8 px-5 py-10 md:grid-cols-4">
           <div>
             <div className="premium-mark">

@@ -10,7 +10,11 @@ import {
   ShieldCheck,
   UploadCloud
 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { api } from "../api/client";
+import { useScrollReveal } from "../hooks/useScrollReveal.js";
+import { money } from "../utils/format.js";
 import { PublicNav } from "./Landing.jsx";
 
 const pages = {
@@ -44,23 +48,23 @@ const pages = {
   pricing: {
     eyebrow: "Launch Economics",
     title: "A SaaS-ready base you can price, deploy, and grow into a real product.",
-    copy: "Start with real auth, PostgreSQL persistence, tenant workflows, invoices, proposals, dashboards, and AI surfaces.",
+    copy: "Start with a polished finance workspace for proposals, invoices, client approvals, documents, and payment follow-up.",
     icon: CreditCard,
     accent: "Production path",
-    bullets: ["Vercel frontend ready", "Render/Railway backend notes", "PostgreSQL migrations", "Extensible payment plans"],
-    flow: ["Build", "Deploy", "Measure", "Monetize"]
+    bullets: ["Workspace-ready onboarding", "Client approval flows", "Invoice and payment tracking", "Flexible growth path"],
+    flow: ["Launch", "Invite", "Measure", "Grow"]
   }
 };
 
-function PreviewCard({ page }) {
+function PreviewCard({ page, accent }) {
   const Icon = page.icon;
 
   return (
-    <div className="panel overflow-hidden">
+    <div data-reveal="right" className="panel overflow-hidden">
       <div className="grid gap-4 border-b border-stone-300 p-5 md:grid-cols-[1fr_auto] md:items-start">
         <div>
           <p className="text-xs font-black uppercase text-stone-500">Live preview</p>
-          <p className="font-editorial mt-2 text-4xl font-bold leading-none">{page.accent}</p>
+          <p className="font-editorial mt-2 text-4xl font-bold leading-none">{accent || page.accent}</p>
         </div>
         <div className="grid h-14 w-14 place-items-center rounded-lg bg-stone-950 text-[#f8d47a]">
           <Icon size={25} />
@@ -68,7 +72,7 @@ function PreviewCard({ page }) {
       </div>
       <div className="grid gap-3 p-5">
         {page.flow.map((step, index) => (
-          <div key={step} className="grid grid-cols-[42px_1fr_auto] items-center gap-3 rounded-lg border border-stone-200 bg-stone-50 p-3">
+          <div key={step} data-reveal="scale" className="grid grid-cols-[42px_1fr_auto] items-center gap-3 rounded-lg border border-stone-200 bg-stone-50 p-3">
             <span className="grid h-9 w-9 place-items-center rounded-lg bg-white text-xs font-black text-stone-500">0{index + 1}</span>
             <span className="font-black text-stone-900">{step}</span>
             <CheckCircle2 className={index < 2 ? "text-teal-700" : "text-stone-300"} size={18} />
@@ -91,12 +95,26 @@ function PreviewCard({ page }) {
 export function PublicProductPage({ type }) {
   const page = pages[type];
   const Icon = page.icon;
+  const revealRef = useScrollReveal();
+  const [stats, setStats] = useState(null);
+
+  useEffect(() => {
+    api.get("/public/stats").then((res) => setStats(res.data)).catch(() => {});
+  }, []);
+
+  const accent = useMemo(() => {
+    if (!stats) return page.accent;
+    if (type === "invoice") return `${stats.invoices} invoices`;
+    if (type === "estimate") return `${stats.proposals} proposals`;
+    if (type === "expense") return `${stats.clients} client profiles`;
+    return money(stats.invoice_value);
+  }, [page.accent, stats, type]);
 
   return (
-    <main className="premium-shell">
+    <main ref={revealRef} className="premium-shell">
       <PublicNav />
       <section className="mx-auto grid max-w-7xl gap-10 px-5 py-14 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-        <div>
+        <div data-reveal="left">
           <div className="inline-flex items-center gap-2 rounded-lg border border-stone-300 bg-white/70 px-3 py-2 text-sm font-black text-stone-800">
             <Icon size={16} className="text-teal-700" />
             {page.eyebrow}
@@ -111,13 +129,13 @@ export function PublicProductPage({ type }) {
             <Link to="/login" className="secondary-btn">Sign in</Link>
           </div>
         </div>
-        <PreviewCard page={page} />
+        <PreviewCard page={page} accent={accent} />
       </section>
 
       <section className="border-y border-stone-300 bg-[#fffefa]">
         <div className="mx-auto grid max-w-7xl gap-5 px-5 py-12 md:grid-cols-4">
           {page.bullets.map((item) => (
-            <article key={item} className="rounded-lg border border-stone-300 bg-white p-5">
+            <article key={item} data-reveal="scale" className="rounded-lg border border-stone-300 bg-white p-5">
               <CheckCircle2 className="text-teal-700" />
               <p className="mt-5 text-sm font-black leading-6 text-stone-900">{item}</p>
             </article>
@@ -127,7 +145,7 @@ export function PublicProductPage({ type }) {
 
       <section className="mx-auto max-w-7xl px-5 py-16">
         <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
-          <div>
+          <div data-reveal="left">
             <p className="eyebrow">Product principle</p>
             <h2 className="font-editorial text-4xl font-bold leading-none md:text-5xl">Every page should reduce the next decision.</h2>
             <p className="mt-4 leading-7 text-stone-600">The interface is designed around the natural order of finance work: identify the client, create the document, protect the proof, then collect the money.</p>
@@ -138,7 +156,7 @@ export function PublicProductPage({ type }) {
               [ShieldCheck, "Scoped"],
               [BadgeIndianRupee, "Collectable"]
             ].map(([CardIcon, label]) => (
-              <div key={label} className="rounded-lg border border-stone-300 bg-[#151515] p-5 text-white">
+              <div key={label} data-reveal="scale" className="rounded-lg border border-stone-300 bg-[#151515] p-5 text-white">
                 <CardIcon className="text-[#f8d47a]" />
                 <p className="font-editorial mt-12 text-3xl font-bold">{label}</p>
               </div>

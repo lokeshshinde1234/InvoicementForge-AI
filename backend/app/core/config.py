@@ -1,4 +1,5 @@
 from functools import lru_cache
+import json
 from typing import List
 
 from pydantic import AnyHttpUrl, field_validator
@@ -25,6 +26,12 @@ class Settings(BaseSettings):
     @classmethod
     def split_origins(cls, value):
         if isinstance(value, str):
+            try:
+                parsed = json.loads(value)
+                if isinstance(parsed, list):
+                    return parsed
+            except json.JSONDecodeError:
+                pass
             return [origin.strip() for origin in value.split(",") if origin.strip()]
         return value
 

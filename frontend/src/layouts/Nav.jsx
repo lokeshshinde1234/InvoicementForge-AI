@@ -1,5 +1,7 @@
 import { BadgeIndianRupee, Bell, Building2, FileText, LayoutDashboard, LogOut, ShieldCheck, Sparkles, UploadCloud, Users, Wand2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
+import { api } from "../api/client";
 import { useAuthStore } from "../store/auth";
 
 const companyLinks = [
@@ -16,7 +18,16 @@ const modeLinks = {
 
 export function Nav({ mode = "company" }) {
   const logout = useAuthStore((state) => state.logout);
+  const user = useAuthStore((state) => state.user);
   const links = mode === "company" ? companyLinks : modeLinks[mode];
+  const [workspace, setWorkspace] = useState(mode === "client" ? "Client Portal" : mode === "superadmin" ? "Platform Admin" : "Workspace");
+
+  useEffect(() => {
+    if (mode !== "company") return;
+    api.get("/companies/me")
+      .then((res) => setWorkspace(res.data.name))
+      .catch(() => setWorkspace(user?.email || "Workspace"));
+  }, [mode, user?.email]);
 
   return (
     <>
@@ -69,7 +80,7 @@ export function Nav({ mode = "company" }) {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs font-semibold uppercase text-slate-400">Workspace</p>
-              <p className="mt-1 text-sm font-semibold">{mode === "client" ? "Client Portal" : mode === "superadmin" ? "Platform Admin" : "Acme Finance"}</p>
+              <p className="mt-1 text-sm font-semibold">{workspace}</p>
             </div>
             <Building2 size={18} className="text-teal-300" />
           </div>

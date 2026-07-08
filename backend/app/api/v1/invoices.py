@@ -82,7 +82,8 @@ async def update_invoice(invoice_id: str, payload: InvoiceUpdate, current_user: 
     invoice = await scoped_invoice(invoice_id, current_user, session)
     for key, value in payload.model_dump(exclude_unset=True).items():
         setattr(invoice, key, value)
-    await refresh_invoice_status(session, invoice)
+    if payload.status is None:
+        await refresh_invoice_status(session, invoice)
     await session.commit()
     return await scoped_invoice(invoice_id, current_user, session)
 

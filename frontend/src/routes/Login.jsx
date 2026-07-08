@@ -1,6 +1,7 @@
 import { ArrowRight, BadgeIndianRupee, CheckCircle2, Fingerprint, LockKeyhole, LogIn, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useScrollReveal } from "../hooks/useScrollReveal.js";
 import { useAuthStore } from "../store/auth";
 
 function routeFor(role) {
@@ -10,13 +11,14 @@ function routeFor(role) {
 }
 
 const securityNotes = [
-  "JWT workspace session",
-  "Role-aware redirect",
-  "PostgreSQL-backed account",
-  "Company scoped data"
+  "Secure workspace session",
+  "Role-aware experience",
+  "Saved account access",
+  "Company-only information"
 ];
 
 export function Login() {
+  const revealRef = useScrollReveal();
   const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
   const [form, setForm] = useState({ email: "", password: "" });
@@ -38,7 +40,7 @@ export function Login() {
   }
 
   return (
-    <main className="auth-shell">
+    <main ref={revealRef} className="auth-shell">
       <section className="auth-panel">
         <Link to="/" className="flex w-fit items-center gap-3">
           <div className="premium-mark">
@@ -50,7 +52,7 @@ export function Login() {
           </div>
         </Link>
 
-        <div className="mt-16 max-w-2xl">
+        <div data-reveal="left" className="mt-16 max-w-2xl">
           <p className="text-sm font-black uppercase text-[#f8d47a]">Welcome back</p>
           <h1 className="font-editorial mt-4 text-5xl font-bold leading-none md:text-7xl">Return to the money room.</h1>
           <p className="mt-5 max-w-xl text-lg leading-8 text-stone-300">
@@ -60,7 +62,7 @@ export function Login() {
 
         <div className="mt-12 grid max-w-xl gap-3 sm:grid-cols-2">
           {securityNotes.map((note) => (
-            <div key={note} className="rounded-lg border border-white/10 bg-white/5 p-4">
+            <div key={note} data-reveal="scale" className="rounded-lg border border-white/10 bg-white/5 p-4">
               <CheckCircle2 className="text-[#f8d47a]" size={18} />
               <p className="mt-3 text-sm font-black">{note}</p>
             </div>
@@ -69,7 +71,7 @@ export function Login() {
       </section>
 
       <section className="auth-form-wrap">
-        <form onSubmit={submit} className="auth-card">
+        <form data-reveal="right" onSubmit={submit} className="auth-card">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="eyebrow">Identity check</p>

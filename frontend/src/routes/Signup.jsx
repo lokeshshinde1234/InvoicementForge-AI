@@ -1,16 +1,18 @@
 import { ArrowRight, BadgeIndianRupee, Building2, CheckCircle2, FileText, Landmark, LockKeyhole, Sparkles } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useScrollReveal } from "../hooks/useScrollReveal.js";
 import { useAuthStore } from "../store/auth";
 
 const onboardingSteps = [
   "Create company identity",
   "Open admin workspace",
-  "Store records in PostgreSQL",
+  "Save client and invoice details",
   "Generate invoice-ready data"
 ];
 
 export function Signup() {
+  const revealRef = useScrollReveal();
   const navigate = useNavigate();
   const signup = useAuthStore((state) => state.signup);
   const [form, setForm] = useState({ company_name: "", email: "", password: "", gst_number: "", address: "" });
@@ -37,7 +39,7 @@ export function Signup() {
   }
 
   return (
-    <main className="auth-shell">
+    <main ref={revealRef} className="auth-shell">
       <section className="auth-panel">
         <Link to="/" className="flex w-fit items-center gap-3">
           <div className="premium-mark">
@@ -49,15 +51,15 @@ export function Signup() {
           </div>
         </Link>
 
-        <div className="mt-16 max-w-2xl">
+        <div data-reveal="left" className="mt-16 max-w-2xl">
           <p className="text-sm font-black uppercase text-[#f8d47a]">Workspace creation</p>
           <h1 className="font-editorial mt-4 text-5xl font-bold leading-none md:text-7xl">Give your finance work a permanent home.</h1>
           <p className="mt-5 max-w-xl text-lg leading-8 text-stone-300">
-            Create a company admin account, persist it in PostgreSQL, and land inside a dashboard designed for proposals, invoices, clients, and collections.
+            Create a company admin account and land inside a dashboard designed for proposals, invoices, clients, and collections.
           </p>
         </div>
 
-        <div className="mt-12 max-w-xl rounded-lg border border-white/10 bg-white/5 p-5">
+        <div data-reveal="scale" className="mt-12 max-w-xl rounded-lg border border-white/10 bg-white/5 p-5">
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-xs font-black uppercase text-stone-400">Onboarding quality</p>
@@ -70,7 +72,7 @@ export function Signup() {
           </div>
           <div className="mt-5 grid gap-3">
             {onboardingSteps.map((step) => (
-              <div key={step} className="flex items-center gap-3 text-sm font-bold text-stone-200">
+              <div key={step} data-reveal="scale" className="flex items-center gap-3 text-sm font-bold text-stone-200">
                 <CheckCircle2 size={16} className="text-[#f8d47a]" />
                 {step}
               </div>
@@ -80,7 +82,7 @@ export function Signup() {
       </section>
 
       <section className="auth-form-wrap">
-        <form onSubmit={submit} className="auth-card">
+        <form data-reveal="right" onSubmit={submit} className="auth-card">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="eyebrow">Company profile</p>
